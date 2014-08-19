@@ -8,11 +8,12 @@
 #
 
 include_recipe "apt::default"
+include_recipe 'build-essential::default'
 include_recipe "git::default"
 include_recipe "python::default"
+include_recipe "postgresql::client"
 
 %w(
-  python-dev
   python-psycopg2
   postgresql
   postgresql-contrib
@@ -33,25 +34,40 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   user "security_monkey"
   repository node['securitymonkey']['repo']
   branch node['securitymonkey']['branch']
+
   symlinks({})
   symlink_before_migrate({})
-  action :deploy
-  %w(execute[run-setup]).each do |item|
-    notifies :run, item
+
+  before_migrate do
+    template "#{release_path}/env-config/config-deploy.py" do
+      source "config-deploy.py.erb"
+      mode 0700
+      variables(
+        :log_level => node['securitymonkey']['log_level'],
+        :email => node['securitymonkey']['security_team_email'],
+        :fqdn => "#{Socket.gethostbyname(Socket.gethostname).first}"
+      )
+    end
   end
+
+  before_symlink do
+    execute "run-setup" do
+      command  'python setup.py install'
+      cwd release_path
+    end
+
+    # execute "flask-migrate" do
+    #   environment({ 'SECURITY_MONKEY_SETTINGS' => "#{release_path}/env-config/config-deploy.py" })
+    #   command 'python manage.py db upgrade'
+    #   cwd release_path
+    # end
+  end
+
+  action :deploy
 end
 
-template "/opt/security_monkey/current/env-config/config-deploy.py" do
-  source "config-deploy.py.erb"
-  mode 0700
-  variables(
-    :log_level => node['securitymonkey']['log_level'],
-    :email => node['securitymonkey']['security_team_email']
-  )
-end
 
-execute "run-setup" do
-  command  'python setup.py install'
-  cwd "#{node['securitymonkey']['deploy_directory']}/current"
-  action :nothing
-end
+
+
+
+

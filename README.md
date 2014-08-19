@@ -1,23 +1,14 @@
 securitymonkey Cookbook
 =======================
-TODO: Enter the cookbook description here.
 
-e.g.
-This cookbook makes your favorite breakfast sandwhich.
+Installs and configures the SecurityMonkey from Netflix.
 
 Requirements
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
-
-e.g.
-#### packages
-- `toaster` - securitymonkey needs toaster to brown your bagel.
+Only tested on Ubuntu 14.04
 
 Attributes
 ----------
-TODO: List you cookbook attributes here.
-
-e.g.
 #### securitymonkey::default
 <table>
   <tr>
@@ -27,17 +18,58 @@ e.g.
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['securitymonkey']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
+    <td><tt>['securitymonkey']['run_as']</tt></td>
+    <td>String</td>
+    <td>which system user should own the service, application code and config</td>
+    <td><tt>security_monkey</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['deploy_directory']</tt></td>
+    <td>String</td>
+    <td>path to deploy the application code when fetched from the repository</td>
+    <td><tt>/opt/security_monkey</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['repo']</tt></td>
+    <td>String</td>
+    <td>Repository hosting our application</td>
+    <td><tt>https://github.com/Netflix/security_monkey.git</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['branch']</tt></td>
+    <td>String</td>
+    <td>Which branch do we want from the repository</td>
+    <td><tt>master</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['log_level']</tt></td>
+    <td>String</td>
+    <td>DEBUG, INFO, WARN, ERROR</td>
+    <td><tt>WARN</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['db']['username']</tt></td>
+    <td>String</td>
+    <td>Postgres user</td>
+    <td><tt>security_monkey</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['db']['password']</tt></td>
+    <td>String</td>
+    <td>Postgres password</td>
+    <td><tt>sec_mky_password</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['securitymonkey']['security_team_email']</tt></td>
+    <td>String</td>
+    <td>Where should Security Monkey send alerts?</td>
+    <td><tt>securityteam@example.com</tt></td>
   </tr>
 </table>
 
 Usage
 -----
 #### securitymonkey::default
-TODO: Write usage instructions for each cookbook.
 
 e.g.
 Just include `securitymonkey` in your node's `run_list`:
@@ -63,6 +95,11 @@ e.g.
 5. Run the tests, ensuring they all pass
 6. Submit a Pull Request using Github
 
-License and Authors
--------------------
-Authors: TODO: List authors
+License
+-------
+
+MIT
+
+Authors
+-------
+Authors: Travis Truman - trumant@gmail.com

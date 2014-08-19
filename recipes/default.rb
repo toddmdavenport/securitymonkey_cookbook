@@ -45,7 +45,7 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
       variables(
         :log_level => node['securitymonkey']['log_level'],
         :email => node['securitymonkey']['security_team_email'],
-        :fqdn => "#{Socket.gethostbyname(Socket.gethostname).first}"
+        :fqdn => node['fqdn']
       )
     end
   end

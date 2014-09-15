@@ -39,13 +39,21 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   symlink_before_migrate({})
 
   before_migrate do
+
+    if node['securitymonkey']['password_salt'].nil? ||
+      node['securitymonkey']['secret_key'].nil?
+      raise "You must provide a value for the attributes password_salt and secret_key"
+    end
+
     template "#{release_path}/env-config/config-deploy.py" do
       source "config-deploy.py.erb"
       mode 0700
       variables(
         :log_level => node['securitymonkey']['log_level'],
         :email => node['securitymonkey']['security_team_email'],
-        :fqdn => node['fqdn']
+        :fqdn => node['fqdn'],
+        :password_salt => node['securitymonkey']['password_salt'],
+        :secret_key => node['securitymonkey']['secret_key']
       )
     end
   end

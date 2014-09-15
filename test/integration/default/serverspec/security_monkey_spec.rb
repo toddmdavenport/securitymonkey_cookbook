@@ -29,4 +29,6 @@ describe file('/opt/security_monkey/current/env-config/config-deploy.py') do
   it { should contain 'LOG_LEVEL = "DEBUG"' }
   it { should contain "SECURITY_TEAM_EMAIL = ['securityteam@example.com']" }
   it { should contain "FQDN = '#{Socket.gethostbyname(Socket.gethostname).first}'"}
+  its(:content) { should match /^SECURITY_PASSWORD_SALT = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'/ }
+  its(:content) { should match /^SECRET_KEY = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'/ }
 end

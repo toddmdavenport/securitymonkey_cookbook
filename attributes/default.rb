@@ -13,3 +13,11 @@ default['securitymonkey']['db']['password'] = 'sec_mky_password'
 
 default['securitymonkey']['security_team_email'] = 'securityteam@example.com'
 
+# Specify the secret_key used for signing Flask user sessions.
+# Generate a key with: ruby -e 'require "securerandom"; puts SecureRandom.uuid'
+default['securitymonkey']['secret_key'] = nil
+
+# Specify the password salt used when bcrypt hashing user passwords.
+# Keep this value secret and do not change it once set.
+# Generate a salt with: ruby -e 'require "securerandom"; puts SecureRandom.uuid'
+default['securitymonkey']['password_salt'] = nil

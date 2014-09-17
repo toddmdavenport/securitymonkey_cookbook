@@ -64,18 +64,26 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
       cwd release_path
     end
 
-    # execute "flask-migrate" do
+    #execute "flask-migrate" do
     #   environment({ 'SECURITY_MONKEY_SETTINGS' => "#{release_path}/env-config/config-deploy.py" })
     #   command 'python manage.py db upgrade'
     #   cwd release_path
-    # end
+    #end
   end
 
   action :deploy
 end
+## TO-DO- Basic
+#run flask-migrate (commented-out block above)
 
+#setup superisor http://securitymonkey.readthedocs.org/en/latest/quickstart1.html#setting-up-supervisor
 
+# SSL cert #check other cookbooks to see how we setup ssl. Remember that this should be generic.
 
+# nginx setup install it and set it up.
 
+## TO-DO Extras
+# facility to create users from cookbook
 
+# create configure rules from cookbook
 

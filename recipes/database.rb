@@ -1,4 +1,22 @@
 # create a postgresql database with additional parameters
+include_recipe "database::postgresql"
+
+%w(
+  python-psycopg2
+  postgresql
+  postgresql-contrib
+  libpq-dev
+  postgresql-server-dev-all
+).each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
+#chef_gem "pg" do
+#  action :install
+#end
+
 postgresql_database 'secmon' do
  connection(
    :host     => '127.0.0.1',

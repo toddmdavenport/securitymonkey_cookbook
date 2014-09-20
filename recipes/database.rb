@@ -2,7 +2,6 @@
 include_recipe "database::postgresql"
 
 %w(
-  python-psycopg2
   postgresql
   postgresql-contrib
   libpq-dev
@@ -17,7 +16,7 @@ end
 #  action :install
 #end
 
-postgresql_database 'secmon' do
+postgresql_database 'secmonkey' do
  connection(
    :host     => '127.0.0.1',
    :port     => 5432,

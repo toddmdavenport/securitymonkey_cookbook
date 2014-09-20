@@ -15,9 +15,7 @@ include_recipe "postgresql::client"
 
 %w(
   python-psycopg2
-  postgresql
-  postgresql-contrib
-  libpq-dev
+  supervisor
 ).each do |pkg|
   package pkg do
     action :install
@@ -74,16 +72,41 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   action :deploy
 end
 ## TO-DO- Basic
-#run flask-migrate (commented-out block above)
 
+supervisor_path = "#{node['securitymonkey']['deploy_directory']}/current/supervisor/"
 #setup superisor http://securitymonkey.readthedocs.org/en/latest/quickstart1.html#setting-up-supervisor
+  template "#{supervisor_path}/security_monkey.ini" do
+    source "secuity-monkey-supervisor.ini.erb"
+    mode 0644
+    variables(
+      :user => node['securitymonkey']['run_as'],
+      :release_path => "#{node['securitymonkey']['deploy_directory']}/current"
+    )
+    action :create
+    user 'security_monkey'
+  end
+
+execute "supervisord -c security_monkey.ini" do
+  cwd supervisor_path
+  user 'root'
+  environment ({'HOME' => '/home/security_monkey'})
+end
+
+execute "supervisorctl -c security_monkey.ini" do
+  cwd supervisor_path
+  user 'root'
+  environment ({'HOME' => '/home/security_monkey'})
+end
+
 
 # SSL cert #check other cookbooks to see how we setup ssl. Remember that this should be generic.
 
-# nginx setup install it and set it up.
+
+# nginx files
+
 
 ## TO-DO Extras
-# facility to create users from cookbook
+# facility to create secmon webapp users from cookbook
 
-# create configure rules from cookbook
+# create webapp rules from cookbook
 

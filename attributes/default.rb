@@ -4,6 +4,8 @@ default['securitymonkey']['deploy_directory'] = '/opt/security_monkey'
 
 default['securitymonkey']['repo'] = 'https://github.com/Netflix/security_monkey.git'
 
+default['securitymonkey']['post_deploy_path'] = "#{node['securitymonkey']['deploy_directory']}/current"
+
 default['securitymonkey']['branch'] = 'master'
 
 default['securitymonkey']['log_level'] = 'WARN'
@@ -21,3 +23,8 @@ default['securitymonkey']['secret_key'] = nil
 # Keep this value secret and do not change it once set.
 # Generate a salt with: ruby -e 'require "securerandom"; puts SecureRandom.uuid'
 default['securitymonkey']['password_salt'] = nil
+
+
+default['security_monkey']['ssl_key_path'] = "/etc/ssl/private/server.key"
+default['security_monkey']['ssl_cert_path'] = "/etc/ssl/certs/server.pem"
+

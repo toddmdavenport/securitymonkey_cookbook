@@ -12,3 +12,4 @@ depends "build-essential"
 depends "git"
 depends "python"
 depends "database"
+depends 'ssl_certificate'

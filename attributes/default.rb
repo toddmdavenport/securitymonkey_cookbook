@@ -10,6 +10,7 @@ default['securitymonkey']['branch'] = 'master'
 
 default['securitymonkey']['log_level'] = 'WARN'
 
+default['securitymonkey']['db']['uri'] = "postgresql://postgres:password@localhost:5432/secmonkey"
 default['securitymonkey']['db']['username'] = 'security_monkey'
 default['securitymonkey']['db']['password'] = 'sec_mky_password'
 
@@ -28,3 +29,4 @@ default['securitymonkey']['password_salt'] = nil
 default['security_monkey']['ssl_key_path'] = "/etc/ssl/private/securitymonkey.key"
 default['security_monkey']['ssl_cert_path'] = "/etc/ssl/certs/securitymonkey.pem"
 default['security_monkey']['fqdn'] = "securitymonkey.localhost"
+

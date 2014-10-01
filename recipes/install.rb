@@ -54,7 +54,8 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
         :email => node['securitymonkey']['security_team_email'],
         :fqdn => node['fqdn'],
         :password_salt => node['securitymonkey']['password_salt'],
-        :secret_key => node['securitymonkey']['secret_key']
+        :secret_key => node['securitymonkey']['secret_key'],
+        :db_uri => node['securitymonkey']['db']['uri']
       )
     end
   end

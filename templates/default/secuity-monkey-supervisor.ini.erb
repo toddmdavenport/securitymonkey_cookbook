@@ -19,8 +19,8 @@ minprocs=200
 user=<%= @user%>
 
 [program:securitymonkey]
-command=python /home/<%= @user%>/security_monkey/manage.py run_api_server
-environment=SECURITY_MONKEY_SETTINGS="<%= @release_path%>/security_monkey/env-config/config-deploy.py"
+command=python <%= @release_path%>/manage.py run_api_server
+environment=SECURITY_MONKEY_SETTINGS="<%= @release_path%>/env-config/config-deploy.py"
 
 [program:securitymonkeyscheduler]
 command=python <%= @release_path%>/manage.py start_scheduler

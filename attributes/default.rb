@@ -1,8 +1,8 @@
 default['securitymonkey']['run_as'] = 'security_monkey'
 
-default['securitymonkey']['deploy_directory'] = '/opt/security_monkey'
-
 default['securitymonkey']['repo'] = 'https://github.com/Netflix/security_monkey.git'
+
+default['securitymonkey']['deploy_directory'] = '/opt/security_monkey'
 
 default['securitymonkey']['post_deploy_path'] = "#{node['securitymonkey']['deploy_directory']}/current"
 
@@ -25,6 +25,6 @@ default['securitymonkey']['secret_key'] = nil
 default['securitymonkey']['password_salt'] = nil
 
 
-default['security_monkey']['ssl_key_path'] = "/etc/ssl/private/server.key"
-default['security_monkey']['ssl_cert_path'] = "/etc/ssl/certs/server.pem"
-
+default['security_monkey']['ssl_key_path'] = "/etc/ssl/private/securitymonkey.key"
+default['security_monkey']['ssl_cert_path'] = "/etc/ssl/certs/securitymonkey.pem"
+default['security_monkey']['fqdn'] = "securitymonkey.localhost"

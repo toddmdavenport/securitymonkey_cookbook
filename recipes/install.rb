@@ -25,6 +25,8 @@ end
 
 user node['securitymonkey']['run_as'] do
   shell "/bin/bash"
+  home "/home/#{node['securitymonkey']['run_as']}"
+  supports :manage_home => true
   system true
   action :create
 end
@@ -80,6 +82,7 @@ end
 ssl_certificate "security_monkey" do
   key_path node['security_monkey']['ssl_key_path']
   cert_path node['security_monkey']['ssl_cert_path']
+  common_name node['security_monkey']['fqdn']
 end
 
 directory "/var/log/nginx/log" do
@@ -96,19 +99,15 @@ end
 file "/var/log/nginx/log/securitymonkey.access.log" do
   owner "www-data"
   group "adm"
-  mode "0644"
+  # mode "0644"
   action :create_if_missing
 end
 
 file "/var/log/nginx/log/securitymonkey.error.log" do
   owner "www-data"
   group "adm"
-  mode "0644"
+  # mode "0644"
   action :create_if_missing
-end
-
-link "/etc/nginx/sites-enabled/securitymonkey.conf" do
-  to "/etc/nginx/sites-available/securitymonkey.conf"
 end
 
 template "/etc/nginx/sites-available/securitymonkey.conf" do
@@ -120,11 +119,19 @@ template "/etc/nginx/sites-available/securitymonkey.conf" do
     :release_path => node['securitymonkey']['post_deploy_path']
   )
   action :create
-  user 'security_monkey'
+  user 'www-data'
   notifies :restart, 'service[nginx]', :immediately
 end
 
+link "/etc/nginx/sites-enabled/securitymonkey.conf" do
+  to "/etc/nginx/sites-available/securitymonkey.conf"
+end
+
 supervisor_path = "#{node['securitymonkey']['post_deploy_path']}/supervisor"
+
+service "supervisor" do
+  action :stop
+end
 
 template "#{supervisor_path}/security_monkey.ini" do
   source "secuity-monkey-supervisor.ini.erb"
@@ -137,24 +144,16 @@ template "#{supervisor_path}/security_monkey.ini" do
   user 'security_monkey'
 end
 
-["supervisord -c security_monkey.ini",
- "supervisorctl -c security_monkey.ini"].each do |cmd|
-  execute cmd do
-    cwd supervisor_path
-    user 'root'
-    environment ({'HOME' => '/home/security_monkey'})
-    not_if "pgrep supervisord"
-  end
+execute "supervisord -c security_monkey.ini" do
+  cwd supervisor_path
+  user 'root'
+  not_if "pgrep supervisord"
+  notifies :run, "execute[supervisorctl -c security_monkey.ini]", :immediately
 end
 
-# SSL cert #check other cookbooks to see how we setup ssl. Remember that this should be generic.
-
-
-
-
-
-## TO-DO Extras
-# facility to create secmon webapp users from cookbook
-
-# create webapp rules from cookbook
+execute "supervisorctl -c security_monkey.ini" do
+  cwd supervisor_path
+  user 'root'
+  action :nothing
+end
 

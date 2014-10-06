@@ -69,10 +69,13 @@ Attributes
 
 Usage
 -----
-#### securitymonkey::default
+#### securitymonkey::database
 
-e.g.
-Just include `securitymonkey` in your node's `run_list`:
+Used to install a local (and insecure) postgresql database for testing. In production an AWS RDS postgresql instance is recomended. 
+
+#### securitymonkey::install
+
+Include `securitymonkey` in your node's `run_list`:
 
 ```json
 {
@@ -82,6 +85,9 @@ Just include `securitymonkey` in your node's `run_list`:
   ]
 }
 ```
+
+Overide or set attributes to sensible
+
 
 Contributing
 ------------

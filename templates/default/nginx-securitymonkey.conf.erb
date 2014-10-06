@@ -2,8 +2,8 @@ server {
    listen      0.0.0.0:443 ssl;
    ssl_certificate <%= @ssl_cert_path%>;
    ssl_certificate_key <%= @ssl_key_path%>;
-   access_log  /var/log/nginx/log/securitymonkey.access.log;
-   error_log   /var/log/nginx/log/securitymonkey.error.log;
+   access_log  /var/log/nginx/securitymonkey.access.log;
+   error_log   /var/log/nginx/securitymonkey.error.log;
 
     location /register {
         proxy_read_timeout 120;

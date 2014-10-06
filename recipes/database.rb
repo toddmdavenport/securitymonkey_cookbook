@@ -1,20 +1,6 @@
 # create a postgresql database with additional parameters
+include_recipe "postgresql::server"
 include_recipe "database::postgresql"
-
-%w(
-  postgresql
-  postgresql-contrib
-  libpq-dev
-  postgresql-server-dev-all
-).each do |pkg|
-  package pkg do
-    action :install
-  end
-end
-
-#chef_gem "pg" do
-#  action :install
-#end
 
 postgresql_database 'secmonkey' do
  connection(

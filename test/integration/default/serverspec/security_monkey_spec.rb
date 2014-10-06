@@ -1,20 +1,16 @@
 require 'spec_helper'
-
 require 'socket'
 
 %w(
   python-dev
   python-psycopg2
-  postgresql
-  postgresql-contrib
-  libpq-dev
-  supervisor
-  nginx
 ).each do |pkg|
   describe package(pkg) do
     it { should be_installed }
   end
 end
+
+#tests for postgresql installed. Check to make sure that there is a secmon db in postgres
 
 describe user('security_monkey') do
   it { should exist }

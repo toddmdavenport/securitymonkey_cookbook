@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: securitymonkey
-# Recipe:: default
+# Recipe:: install
 #
 # Copyright 2014, YOUR_COMPANY_NAME
 #
@@ -12,6 +12,7 @@ include_recipe 'build-essential::default'
 include_recipe "git::default"
 include_recipe "python::default"
 include_recipe "postgresql::client"
+include_recipe "nginx::default"
 
 %w(
   python-psycopg2
@@ -62,7 +63,7 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
 
   before_symlink do
     execute "run-setup" do
-      command  'python setup.py install'
+      command 'python setup.py install'
       cwd release_path
     end
 
@@ -76,38 +77,21 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   action :deploy
 end
 
-service "nginx" do
-  action :nothing
-end
-
 ssl_certificate "security_monkey" do
   key_path node['security_monkey']['ssl_key_path']
   cert_path node['security_monkey']['ssl_cert_path']
   common_name node['security_monkey']['fqdn']
 end
 
-directory "/var/log/nginx/log" do
+file "/var/log/nginx/securitymonkey.access.log" do
   owner "www-data"
   group "adm"
-  mode "0644"
-  action :create
-end
-
-file "/etc/nginx/sites-enabled/default" do
-  action :delete
-end
-
-file "/var/log/nginx/log/securitymonkey.access.log" do
-  owner "www-data"
-  group "adm"
-  # mode "0644"
   action :create_if_missing
 end
 
-file "/var/log/nginx/log/securitymonkey.error.log" do
+file "/var/log/nginx/securitymonkey.error.log" do
   owner "www-data"
   group "adm"
-  # mode "0644"
   action :create_if_missing
 end
 
@@ -129,32 +113,24 @@ link "/etc/nginx/sites-enabled/securitymonkey.conf" do
 end
 
 supervisor_path = "#{node['securitymonkey']['post_deploy_path']}/supervisor"
+release_path = "#{node['securitymonkey']['post_deploy_path']}"
 
-service "supervisor" do
-  action :stop
+supervisor_service "securitymonkey" do
+  command "python #{release_path}/manage.py run_api_server"
+  user "root"
+  environment :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
+  action [:enable, :start]
 end
 
-template "#{supervisor_path}/security_monkey.ini" do
-  source "secuity-monkey-supervisor.ini.erb"
-  mode 0644
-  variables(
-    :user => node['securitymonkey']['run_as'],
-    :release_path => "#{node['securitymonkey']['post_deploy_path']}"
-  )
-  action :create
-  user 'security_monkey'
-end
+#hit the register_user endpoint to create a user. If there is not a user, scheduler can't start.
 
-execute "supervisord -c security_monkey.ini" do
-  cwd supervisor_path
-  user 'root'
-  not_if "pgrep supervisord"
-  notifies :run, "execute[supervisorctl -c security_monkey.ini]", :immediately
-end
-
-execute "supervisorctl -c security_monkey.ini" do
-  cwd supervisor_path
-  user 'root'
-  action :nothing
+supervisor_service "securitymonkeyscheduler" do
+  command "python #{release_path}/manage.py start_scheduler"
+  environment :PYTHONPATH=> release_path,
+              :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
+  user "root"
+  autostart true
+  autorestart true
+  action [:enable, :start]
 end
 

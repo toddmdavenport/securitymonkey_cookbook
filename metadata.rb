@@ -12,4 +12,7 @@ depends "build-essential"
 depends "git"
 depends "python"
 depends "database"
-depends 'ssl_certificate'
+depends "postgres"
+depends "ssl_certificate"
+depends "nginx"
+depends "supervisor"

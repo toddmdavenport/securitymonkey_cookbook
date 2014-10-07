@@ -13,11 +13,11 @@ include_recipe "git::default"
 include_recipe "python::default"
 include_recipe "postgresql::client"
 include_recipe "nginx::default"
+include_recipe "supervisor"
 
 %w(
   python-psycopg2
-  nginx
-  supervisor
+  curl
 ).each do |pkg|
   package pkg do
     action :install
@@ -56,7 +56,8 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
         :fqdn => node['fqdn'],
         :password_salt => node['securitymonkey']['password_salt'],
         :secret_key => node['securitymonkey']['secret_key'],
-        :db_uri => node['securitymonkey']['db']['uri']
+        :db_uri => node['securitymonkey']['db']['uri'],
+        :use_ssl => node['security_monkey']['use_ssl']
       )
     end
   end
@@ -122,15 +123,15 @@ supervisor_service "securitymonkey" do
   action [:enable, :start]
 end
 
-#hit the register_user endpoint to create a user. If there is not a user, scheduler can't start.
-
-supervisor_service "securitymonkeyscheduler" do
-  command "python #{release_path}/manage.py start_scheduler"
-  environment :PYTHONPATH=> release_path,
-              :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
-  user "root"
-  autostart true
-  autorestart true
-  action [:enable, :start]
+#this will not run successfully in test kitchen due to lack of IAM roles/ accounts to check
+if node['hostname'] != "default-ubuntu-1404"
+  supervisor_service "securitymonkeyscheduler" do
+    command "python #{release_path}/manage.py start_scheduler"
+    environment :PYTHONPATH=> release_path,
+                :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
+    user "root"
+    autostart true
+    autorestart true
+    action [:enable, :start]
+  end
 end
-

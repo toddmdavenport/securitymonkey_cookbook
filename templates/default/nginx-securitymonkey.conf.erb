@@ -1,9 +1,15 @@
 server {
+<% if @use_ssl %>
    listen      0.0.0.0:443 ssl;
    ssl_certificate <%= @ssl_cert_path%>;
    ssl_certificate_key <%= @ssl_key_path%>;
    access_log  /var/log/nginx/securitymonkey.access.log;
    error_log   /var/log/nginx/securitymonkey.error.log;
+<% else %>
+   listen      0.0.0.0:80;
+   access_log  /var/log/nginx/securitymonkey.access.log;
+   error_log   /var/log/nginx/securitymonkey.error.log;
+<% end %>
 
     location /register {
         proxy_read_timeout 120;

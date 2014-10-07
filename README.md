@@ -88,6 +88,8 @@ Include `securitymonkey` in your node's `run_list`:
 
 Overide or set attributes to sensible
 
+If you wish to handle ssl connections with and ELB you can set node['security_monkey']['use_ssl'] to false. Disabling ssl without handling it through other means is discoraged.
+
 
 Contributing
 ------------

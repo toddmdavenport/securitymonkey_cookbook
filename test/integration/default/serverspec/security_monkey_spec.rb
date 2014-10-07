@@ -41,19 +41,13 @@ describe file("/etc/ssl/certs/securitymonkey.pem") do
   it { should be_owned_by 'root' }
 end
 
-describe file("/var/log/nginx/log") do
-  it { should be_directory }
-  it { should be_owned_by 'www-data' }
-  it { should be_grouped_into 'adm' }
-end
-
-describe file("/var/log/nginx/log/securitymonkey.access.log") do
+describe file("/var/log/nginx/securitymonkey.access.log") do
   it { should be_file }
   it { should be_owned_by 'www-data' }
   it { should be_grouped_into 'adm' }
 end
 
-describe file("/var/log/nginx/log/securitymonkey.error.log") do 
+describe file("/var/log/nginx/securitymonkey.error.log") do 
   it { should be_file }
   it { should be_owned_by 'www-data' }
   it { should be_grouped_into 'adm' }

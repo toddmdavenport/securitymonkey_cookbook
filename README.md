@@ -7,66 +7,6 @@ Requirements
 ------------
 Only tested on Ubuntu 14.04
 
-Attributes
-----------
-#### securitymonkey::default
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['run_as']</tt></td>
-    <td>String</td>
-    <td>which system user should own the service, application code and config</td>
-    <td><tt>security_monkey</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['deploy_directory']</tt></td>
-    <td>String</td>
-    <td>path to deploy the application code when fetched from the repository</td>
-    <td><tt>/opt/security_monkey</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['repo']</tt></td>
-    <td>String</td>
-    <td>Repository hosting our application</td>
-    <td><tt>https://github.com/Netflix/security_monkey.git</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['branch']</tt></td>
-    <td>String</td>
-    <td>Which branch do we want from the repository</td>
-    <td><tt>master</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['log_level']</tt></td>
-    <td>String</td>
-    <td>DEBUG, INFO, WARN, ERROR</td>
-    <td><tt>WARN</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['db']['username']</tt></td>
-    <td>String</td>
-    <td>Postgres user</td>
-    <td><tt>security_monkey</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['db']['password']</tt></td>
-    <td>String</td>
-    <td>Postgres password</td>
-    <td><tt>sec_mky_password</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['securitymonkey']['security_team_email']</tt></td>
-    <td>String</td>
-    <td>Where should Security Monkey send alerts?</td>
-    <td><tt>securityteam@example.com</tt></td>
-  </tr>
-</table>
-
 Usage
 -----
 #### securitymonkey::database
@@ -81,14 +21,33 @@ Include `securitymonkey` in your node's `run_list`:
 {
   "name":"my_node",
   "run_list": [
-    "recipe[securitymonkey]"
+    "recipe[securitymonkey::install]"
   ]
 }
 ```
 
-Overide or set attributes to sensible
+Attributes
+----------
+#### securitymonkey::default
 
-If you wish to handle ssl connections with and ELB you can set node['security_monkey']['use_ssl'] to false. Disabling ssl without handling it through other means is discoraged.
+|Key                                        |Type   |Description    |Default    |
+|-------------------------------------------|-------|---------------|-----------|
+|['securitymonkey']['run_as']               |String |system user should own the service, application code and config|security_monkey|
+|['securitymonkey']['deploy_directory']     |String |path to deploy the application code when fetched from the repository |/opt/security_monkey|
+|['securitymonkey']['repo']                 |String |Repository hosting the application |https://github.com/Netflix/security_monkey.git
+|['securitymonkey']['branch']               |String |git branch from the repository | master| 
+|['securitymonkey']['log_level']            |String |DEBUG, INFO, WARN, ERROR | WARN|
+|['securitymonkey']['db']['username']       |String |Postgres user |security_monkey|
+|['securitymonkey']['db']['password']       |String |Postgres pass |sec_mky_password|
+|['securitymonkey']['security_team_email']  |String |where Security Monkey sends alerts|securityteam@example.com|
+|['securitymonkey']['secret_key']|          |String |session key for flask user sessions | nil|
+|['securitymonkey']['password_salt']        |String |salt for bcrypt password storage| nil|
+|['securitymonkey']['use_ssl']              |Bool   |should nginx server content over ssl| true|
+|['securitymonkey']['ssl_key_path']         |String |where the ssl secret key should be stored| etc/ssl/private/securitymonkey.key| 
+|['securitymonkey']['ssl_cert_path']        |String |where the ssl certificate should be stored| /etc/ssl/certs/securitymonkey.pem|
+|['securitymonkey']['fqdn']                 |String |fully qulified domain name of the host | default-ubuntu-1404.vagrantup.com|
+|['nginx']['default_site_enabled']          |Bool   |Should nginx's 'default' site be enabled | false
+|['supervisor']['dir']                      |String |Where should supervisord manage config files| /etc/supervisor/conf.d|
 
 
 Contributing

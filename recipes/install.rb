@@ -57,7 +57,7 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
         :password_salt => node['securitymonkey']['password_salt'],
         :secret_key => node['securitymonkey']['secret_key'],
         :db_uri => node['securitymonkey']['db']['uri'],
-        :use_ssl => node['security_monkey']['use_ssl']
+        :use_ssl => node['securitymonkey']['use_ssl']
       )
     end
   end
@@ -78,10 +78,10 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   action :deploy
 end
 
-ssl_certificate "security_monkey" do
-  key_path node['security_monkey']['ssl_key_path']
-  cert_path node['security_monkey']['ssl_cert_path']
-  common_name node['security_monkey']['fqdn']
+ssl_certificate "securitymonkey" do
+  key_path node['securitymonkey']['ssl_key_path']
+  cert_path node['securitymonkey']['ssl_cert_path']
+  common_name node['securitymonkey']['fqdn']
 end
 
 file "/var/log/nginx/securitymonkey.access.log" do
@@ -100,8 +100,8 @@ template "/etc/nginx/sites-available/securitymonkey.conf" do
   source "nginx-securitymonkey.conf.erb"
   mode 0644
   variables(
-    :ssl_key_path => node['security_monkey']['ssl_key_path'],
-    :ssl_cert_path => node['security_monkey']['ssl_cert_path'],
+    :ssl_key_path => node['securitymonkey']['ssl_key_path'],
+    :ssl_cert_path => node['securitymonkey']['ssl_cert_path'],
     :release_path => node['securitymonkey']['post_deploy_path']
   )
   action :create

@@ -1,6 +1,9 @@
 ---
 driver:
   name: vagrant
+  network:
+  - ["forwarded_port", {guest: 443, host: 8433}]
+  - ["private_network", {ip: "192.168.33.33"}]
 
 provisioner:
   name: chef_solo
@@ -11,9 +14,14 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[securitymonkey::default]
+      - recipe[securitymonkey::database]
+      - recipe[securitymonkey::install]
+
     attributes:
+      postgresql:
+        password:
+          postgres: password
       securitymonkey:
         log_level: DEBUG
         password_salt: 70c4e7da-5c42-4892-b23c-8000208e4732
-        secret_key: da92bde9-cec0-40c0-ba6f-cbb81e812ab0
+        secret_key: da92bde9-cec0-40c0-ba6f-cbb81e812ab0  

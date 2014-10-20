@@ -6,22 +6,29 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+supervisor_path = "#{node['securitymonkey']['post_deploy_path']}/supervisor"
+deploy_path = "#{node['securitymonkey']['post_deploy_path']}"
 
 include_recipe "apt::default"
 include_recipe 'build-essential::default'
 include_recipe "git::default"
 include_recipe "python::default"
 include_recipe "postgresql::client"
-include_recipe "nginx::default"
 include_recipe "supervisor"
+include_recipe 'chef-sugar::default'
 
 %w(
   python-psycopg2
   curl
+  nginx
 ).each do |pkg|
   package pkg do
     action :install
   end
+end
+
+service "nginx" do
+  action :nothing
 end
 
 user node['securitymonkey']['run_as'] do
@@ -33,7 +40,7 @@ user node['securitymonkey']['run_as'] do
 end
 
 deploy_revision node['securitymonkey']['deploy_directory'] do
-  user "security_monkey"
+  user node['securitymonkey']['run_as']
   repository node['securitymonkey']['repo']
   branch node['securitymonkey']['branch']
 
@@ -56,8 +63,7 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
         :fqdn => node['fqdn'],
         :password_salt => node['securitymonkey']['password_salt'],
         :secret_key => node['securitymonkey']['secret_key'],
-        :db_uri => node['securitymonkey']['db']['uri'],
-        :use_ssl => node['securitymonkey']['use_ssl']
+        :db_uri => node['securitymonkey']['db']['uri']
       )
     end
   end
@@ -99,39 +105,37 @@ end
 template "/etc/nginx/sites-available/securitymonkey.conf" do
   source "nginx-securitymonkey.conf.erb"
   mode 0644
+  user 'www-data'
   variables(
     :ssl_key_path => node['securitymonkey']['ssl_key_path'],
+    :use_ssl => node['securitymonkey']['use_ssl'],
     :ssl_cert_path => node['securitymonkey']['ssl_cert_path'],
-    :release_path => node['securitymonkey']['post_deploy_path']
-  )
+    :release_path => deploy_path
+)
   action :create
-  user 'www-data'
-  notifies :restart, 'service[nginx]', :immediately
+  notifies :create, "link[/etc/nginx/sites-enabled/securitymonkey.conf]", :immediately
+  notifies :restart, 'service[nginx]', :delayed
 end
 
 link "/etc/nginx/sites-enabled/securitymonkey.conf" do
   to "/etc/nginx/sites-available/securitymonkey.conf"
+  action :nothing
 end
 
-supervisor_path = "#{node['securitymonkey']['post_deploy_path']}/supervisor"
-release_path = "#{node['securitymonkey']['post_deploy_path']}"
-
 supervisor_service "securitymonkey" do
-  command "python #{release_path}/manage.py run_api_server"
+  command "python #{deploy_path}/manage.py run_api_server"
   user "root"
-  environment :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
+  environment :SECURITY_MONKEY_SETTINGS=>"#{deploy_path}/env-config/config-deploy.py" 
   action [:enable, :start]
 end
 
-#this will not run successfully in test kitchen due to lack of IAM roles/ accounts to check
-if node['hostname'] != "default-ubuntu-1404"
-  supervisor_service "securitymonkeyscheduler" do
-    command "python #{release_path}/manage.py start_scheduler"
-    environment :PYTHONPATH=> release_path,
-                :SECURITY_MONKEY_SETTINGS=>"#{release_path}/env-config/config-deploy.py" 
-    user "root"
-    autostart true
-    autorestart true
-    action [:enable, :start]
-  end
+supervisor_service "securitymonkeyscheduler" do
+  command "python #{deploy_path}/manage.py start_scheduler"
+  environment :PYTHONPATH=> deploy_path,
+              :SECURITY_MONKEY_SETTINGS=>"#{deploy_path}/env-config/config-deploy.py" 
+  user "root"
+  autostart true
+  autorestart true
+  action [:enable, :start]
+  not_if { vagrant? }
 end

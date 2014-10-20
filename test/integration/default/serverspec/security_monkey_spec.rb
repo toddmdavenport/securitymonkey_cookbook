@@ -10,20 +10,18 @@ require 'socket'
   end
 end
 
-#tests for postgresql installed. Check to make sure that there is a secmon db in postgres
-
-describe user('security_monkey') do
+describe user('securitymonkey') do
   it { should exist }
 end
 
 describe file('/opt/security_monkey/current/setup.py') do
   it { should be_file }
-  it { should be_owned_by 'security_monkey' }
+  it { should be_owned_by 'securitymonkey' }
 end
 
 describe file('/opt/security_monkey/current/env-config/config-deploy.py') do
   it { should be_file }
-  it { should be_owned_by 'security_monkey' }
+  it { should be_owned_by 'securitymonkey' }
   it { should contain 'LOG_LEVEL = "DEBUG"' }
   it { should contain "SECURITY_TEAM_EMAIL = ['securityteam@example.com']" }
   it { should contain "FQDN = '#{Socket.gethostbyname(Socket.gethostname).first}'"}
@@ -62,15 +60,15 @@ describe file("/etc/nginx/sites-enabled/securitymonkey.conf") do
   it { should be_linked_to "/etc/nginx/sites-available/securitymonkey.conf" }
 end
 
-describe service('supervisord') do
+describe service('nginx') do
   it { should be_running }
 end
 
-describe service('nginx') do
+describe service('supervisord') do
   it { should be_running }
 end
 
 describe file('/opt/security_monkey/current/supervisor/security_monkey.ini') do
   it { should be_file }
-  it { should be_owned_by 'security_monkey' }
+  it { should be_owned_by 'securitymonkey' }
 end

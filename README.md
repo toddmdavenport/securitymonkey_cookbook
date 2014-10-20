@@ -32,22 +32,22 @@ Attributes
 
 |Key                                        |Type   |Description    |Default    |
 |-------------------------------------------|-------|---------------|-----------|
-|['securitymonkey']['run_as']               |String |system user should own the service, application code and config|security_monkey|
-|['securitymonkey']['deploy_directory']     |String |path to deploy the application code when fetched from the repository |/opt/security_monkey|
-|['securitymonkey']['repo']                 |String |Repository hosting the application |https://github.com/Netflix/security_monkey.git
-|['securitymonkey']['branch']               |String |git branch from the repository | master| 
-|['securitymonkey']['log_level']            |String |DEBUG, INFO, WARN, ERROR | WARN|
-|['securitymonkey']['db']['username']       |String |Postgres user |security_monkey|
-|['securitymonkey']['db']['password']       |String |Postgres pass |sec_mky_password|
-|['securitymonkey']['security_team_email']  |String |where Security Monkey sends alerts|securityteam@example.com|
-|['securitymonkey']['secret_key']|          |String |session key for flask user sessions | nil|
-|['securitymonkey']['password_salt']        |String |salt for bcrypt password storage| nil|
-|['securitymonkey']['use_ssl']              |Bool   |should nginx server content over ssl| true|
-|['securitymonkey']['ssl_key_path']         |String |where the ssl secret key should be stored| etc/ssl/private/securitymonkey.key| 
-|['securitymonkey']['ssl_cert_path']        |String |where the ssl certificate should be stored| /etc/ssl/certs/securitymonkey.pem|
-|['securitymonkey']['fqdn']                 |String |fully qulified domain name of the host | default-ubuntu-1404.vagrantup.com|
-|['nginx']['default_site_enabled']          |Bool   |Should nginx's 'default' site be enabled | false
-|['supervisor']['dir']                      |String |Where should supervisord manage config files| /etc/supervisor/conf.d|
+|['securitymonkey']['run_as']               |String |system user should own the service, application code and config |security_monkey |
+|['securitymonkey']['deploy_directory']     |String |path to deploy the application code when fetched from the repository |/opt/security_monkey |
+|['securitymonkey']['repo']                 |String |Repository hosting the application |https://github.com/Netflix/security_monkey.git |
+|['securitymonkey']['branch']               |String |git branch from the repository |master | 
+|['securitymonkey']['log_level']            |String |DEBUG, INFO, WARN, ERROR |WARN |
+|['securitymonkey']['db']['username']       |String |Postgres user |security_monkey |
+|['securitymonkey']['db']['password']       |String |Postgres pass |sec_mky_password |
+|['securitymonkey']['security_team_email']  |String |where Security Monkey sends alerts |securityteam@example.com |
+|['securitymonkey']['secret_key']|          |String |session key for flask user sessions |nil |
+|['securitymonkey']['password_salt']        |String |salt for bcrypt password storage |nil |
+|['securitymonkey']['use_ssl']              |Bool   |should nginx server content over ssl |true |
+|['securitymonkey']['ssl_key_path']         |String |where the ssl secret key should be stored |etc/ssl/private/securitymonkey.key |
+|['securitymonkey']['ssl_cert_path']        |String |where the ssl certificate should be stored |/etc/ssl/certs/securitymonkey.pem |
+|['securitymonkey']['fqdn']                 |String |fully qulified domain name of the host |default-ubuntu-1404.vagrantup.com |
+|['nginx']['default_site_enabled']          |Bool   |Should nginx's 'default' site be enabled |false |
+|['supervisor']['dir']                      |String |Where should supervisord manage config files |/etc/supervisor/conf.d |
 
 
 Contributing

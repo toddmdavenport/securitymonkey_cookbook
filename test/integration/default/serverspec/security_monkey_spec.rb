@@ -10,8 +10,6 @@ require 'socket'
   end
 end
 
-#tests for postgresql installed. Check to make sure that there is a secmon db in postgres
-
 describe user('securitymonkey') do
   it { should exist }
 end

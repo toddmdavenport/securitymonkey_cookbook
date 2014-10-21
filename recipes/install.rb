@@ -88,6 +88,7 @@ ssl_certificate "securitymonkey" do
   key_path node['securitymonkey']['ssl_key_path']
   cert_path node['securitymonkey']['ssl_cert_path']
   common_name node['securitymonkey']['fqdn']
+  only_if { vagrant? }
 end
 
 file "/var/log/nginx/securitymonkey.access.log" do

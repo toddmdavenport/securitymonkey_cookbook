@@ -60,11 +60,10 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
       variables(
         :log_level => node['securitymonkey']['log_level'],
         :email => node['securitymonkey']['security_team_email'],
-        :fqdn => node['fqdn'],
+        :fqdn => node['securitymonkey']['fqdn'] || node['fqdn'],
         :password_salt => node['securitymonkey']['password_salt'],
         :secret_key => node['securitymonkey']['secret_key'],
-        :db_uri => node['securitymonkey']['db']['uri'],
-        :use_ssl => node['securitymonkey']['use_ssl']
+        :db_uri => node['securitymonkey']['db']['uri']
       )
     end
   end

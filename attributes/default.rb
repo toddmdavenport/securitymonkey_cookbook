@@ -33,4 +33,4 @@ default['securitymonkey']['force_deploy'] = false
 
 default['nginx']['default_site_enabled'] = false
 
-default['supervisor']['dir'] = "/etc/supervisor/conf
+default['supervisor']['dir'] = "/etc/supervisor/conf"

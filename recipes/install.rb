@@ -43,7 +43,7 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
   user node['securitymonkey']['run_as']
   repository node['securitymonkey']['repo']
   branch node['securitymonkey']['branch']
-
+  action node['securitymonkey']['force_deploy'] ? :force_deploy : :deploy
   symlinks({})
   symlink_before_migrate({})
 

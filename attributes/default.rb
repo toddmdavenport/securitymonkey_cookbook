@@ -29,7 +29,8 @@ default['securitymonkey']['use_ssl'] = true
 default['securitymonkey']['ssl_key_path'] = "/etc/ssl/private/securitymonkey.key"
 default['securitymonkey']['ssl_cert_path'] = "/etc/ssl/certs/securitymonkey.pem"
 default['securitymonkey']['fqdn'] = "default-ubuntu-1404.vagrantup.com"
+default['securitymonkey']['force_deploy'] = false
 
 default['nginx']['default_site_enabled'] = false
 
-default['supervisor']['dir'] = "/etc/supervisor/conf.d"
+default['supervisor']['dir'] = "/etc/supervisor/conf

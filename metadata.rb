@@ -8,7 +8,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.3'
 
 depends "apt"
-depends "build-essential", ">= 1.4.2"
+depends "build-essential"
 depends "git"
 depends "python"
 depends "postgresql"

@@ -63,7 +63,8 @@ deploy_revision node['securitymonkey']['deploy_directory'] do
         :fqdn => node['fqdn'],
         :password_salt => node['securitymonkey']['password_salt'],
         :secret_key => node['securitymonkey']['secret_key'],
-        :db_uri => node['securitymonkey']['db']['uri']
+        :db_uri => node['securitymonkey']['db']['uri'],
+        :use_ssl => node['securitymonkey']['use_ssl']
       )
     end
   end
